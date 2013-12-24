@@ -6,11 +6,15 @@ var bl = require('bl');
 
 var urls = [];
 for (var i = 2; i <= 4; i++) {
-	urls.push(process.argv[i]);
+	(function (i) {
+		urls.push(function (callback) {
+			getHttp(process.argv[i], callback);
+		});
+	}(i));
 };
 
-var getHttp = function getHttp (index, callback) {
-	http.get(urls[0 + index], function (response) {
+var getHttp = function getHttp (url, callback) {
+	http.get(url, function (response) {
 		response.setEncoding('utf8');
 		// response.on('data', function (chunk) {
 		response.pipe(bl(function (err, data) {
@@ -23,17 +27,7 @@ var getHttp = function getHttp (index, callback) {
 	});
 }
 
-async.parallel([
-    function(callback){
-        getHttp(0, callback);
-    },
-    function(callback){
-        getHttp(1, callback);
-    },
-    function(callback){
-        getHttp(2, callback);
-    }
-],
+async.parallel(urls,
 // optional callback
 function(err, results){
     // the results array will equal ['one','two'] even though
