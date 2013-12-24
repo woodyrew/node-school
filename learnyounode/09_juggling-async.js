@@ -9,45 +9,29 @@ for (var i = 2; i <= 4; i++) {
 	urls.push(process.argv[i]);
 };
 
+var getHttp = function getHttp (index, callback) {
+	http.get(urls[0 + index], function (response) {
+		response.setEncoding('utf8');
+		// response.on('data', function (chunk) {
+		response.pipe(bl(function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, data.toString());
+		}));
+	});
+}
+
 async.parallel([
     function(callback){
-        http.get(urls[0], function (response) {
-			response.setEncoding('utf8');
-			// response.on('data', function (chunk) {
-			response.pipe(bl(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, data.toString());
-			}));
-		});
+        getHttp(0, callback);
     },
     function(callback){
-        http.get(urls[1], function (response) {
-			response.setEncoding('utf8');
-			// response.on('data', function (chunk) {
-			response.pipe(bl(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, data.toString());
-			}));
-		});
+        getHttp(1, callback);
     },
     function(callback){
-        http.get(urls[2], function (response) {
-			response.setEncoding('utf8');
-			// response.on('data', function (chunk) {
-			response.pipe(bl(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, data.toString());
-			}));
-		});
+        getHttp(2, callback);
     }
 ],
 // optional callback
@@ -60,5 +44,31 @@ function(err, results){
 });
 
 /* Official answer:
+var http = require('http')
+var bl = require('bl')
+var results = []
+var count = 0
 
+function printResults () {
+	for (var i = 0; i < 3; i++)
+		console.log(results[i])
+}
+
+function httpGet (index) {
+	http.get(process.argv[2 + index], function (response) {
+		response.pipe(bl(function (err, data) {
+			if (err)
+				return console.error(data)
+
+			results[index] = data.toString()
+			count++
+
+			if (count == 3) // yay! we are the last one!
+				printResults()
+		}))
+	})
+}
+
+for (var i = 0; i < 3; i++)
+	httpGet(i)
 */
