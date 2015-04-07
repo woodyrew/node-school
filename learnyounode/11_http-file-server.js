@@ -9,7 +9,7 @@ var file_to_serve = process.argv[3];
 var server = http.createServer(function (req, res) {
 	fs.createReadStream(file_to_serve).pipe(res);
 });
-server.listen(http_port)
+server.listen(http_port);
 
 /* Official answer:
 var http = require('http')
