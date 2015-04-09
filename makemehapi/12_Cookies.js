@@ -52,17 +52,12 @@ server.route({
 		},
 		handler: function (request, reply) {
 			var session = request.state.session;
-console.log(session);
-			if (session) {
-				reply({user: 'hapi'});
-			}
-			else {
-				reply({
-					statusCode: 400,
-					error: "Bad Request",
-					message: "Invalid cookie value"
-				});
-			}
+
+			reply({
+				statusCode: 400,
+				error: "Bad Request",
+				message: "Invalid cookie value"
+			});
 		}
 	}
 })
